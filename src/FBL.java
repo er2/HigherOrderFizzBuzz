@@ -20,19 +20,13 @@ public class FBL
 
    private static String fizzbuzz(int n)
    {
-      StageGenerator sg = (test, output, func) -> {
-         if (test.test(n))
-         {
-            return g -> output + func.apply("");
-         }
-         else
-         {
-            return func;
-         }
-      };
+      StageGenerator sg = (test, output, func) -> test.test(n) ? (g -> output + func.apply("")) : func;
+
       UnaryOperator<UnaryOperator<String>> fizz = f -> sg.generate(k -> k % 3 == 0, "Fizz", f);
       UnaryOperator<UnaryOperator<String>> buzz = f -> sg.generate(k -> k % 5 == 0, "Buzz", f);
-      UnaryOperator<String> id = s -> s;
+
+      UnaryOperator<String> id = UnaryOperator.identity();
+
       return fizz.apply(buzz.apply(id)).apply(Integer.toString(n));
    }
 
